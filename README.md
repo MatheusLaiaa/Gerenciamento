@@ -28,6 +28,24 @@ Crie uma stored procedure chamada "InserirPedido" que permite inserir um novo pe
 
 Crie uma trigger que seja acionada APÓS a inserção de um novo pedido na tabela "Pedidos". A trigger deve calcular o valor total dos pedidos para o cliente correspondente e atualizar um campo "TotalPedidos" na tabela "Clientes" com o valor total. Teste a Trigger inserindo um novo pedido na tabela "Pedidos“.
 
+-- Criação da Trigger para atualizar TotalPedidos na tabela Clientes
+DELIMITER //
+
+CREATE TRIGGER AtualizarTotalPedidos AFTER INSERT ON Pedidos
+FOR EACH ROW
+BEGIN
+    UPDATE Clientes
+    SET TotalPedidos = (
+        SELECT SUM(Valor)
+        FROM Pedidos
+        WHERE ClienteID = NEW.ClienteID
+    )
+    WHERE ClienteID = NEW.ClienteID;
+END //
+
+DELIMITER ;
+
+
 
 ## Etapa 4: View
 
